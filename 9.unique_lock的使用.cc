@@ -42,6 +42,7 @@ int main()
     std::thread t1(test);
     std::this_thread::sleep_for(std::chrono::milliseconds(10)); // 延迟100毫秒
     // 主线程尝试抢锁
+    // 离开这个作用域,主线程释放锁
     {
         std::unique_lock<std::mutex> main_lock(mtx);
         if(main_lock.owns_lock()){
