@@ -48,9 +48,10 @@ void outEven(){
     while(count > 0){
         // 抢锁
         std::unique_lock<std::mutex>lock(mtx);
-        // 检查当前元素是不是奇数,如果是打印该元素
-        // 检查当前元素是不是奇数,如果是，直接打印，并操作
+        // 检查当前元素是不是偶数,如果是打印该元素
+        // 检查当前元素是不是偶数,如果是，直接打印，并操作
         // 如果不是,释放锁资源，重新抢锁
+        // 也就是说wait的第二个参数为true继续执行,为false就等待，并释放锁
         condEven.wait(lock,[](){
             return num % 2 == 0 ;
         });
