@@ -92,25 +92,37 @@ public:
 int main(){
     M_shared_ptr<int> ptr1; // 1
     // 输出引用计数
-    std::cout<<ptr1.controlBlock_->getCount()<<std::endl; // 1
+    std::cout<<"ptr1的引用计数: "<<ptr1.controlBlock_->getCount()<<std::endl; // 1
     M_shared_ptr<int> ptr2(ptr1);
-    std::cout<<ptr2.controlBlock_->getCount()<<std::endl; // 2
+    std::cout<<"ptr2的引用计数: "<<ptr2.controlBlock_->getCount()<<std::endl; // 2
     // // 赋值运算
     {
         M_shared_ptr<int> ptr3; // 1
-        std::cout<<ptr3.controlBlock_->getCount()<<std::endl; // 1
+        std::cout<<"ptr3的引用计数: "<<ptr3.controlBlock_->getCount()<<std::endl; // 1
+        // 赋值操作,ptr3原先指向的位置引用计数减少,ptr2的引用计数增加,并且ptr3指向ptr2的资源上
         ptr3 = ptr2;
-        std::cout<<ptr3.controlBlock_->getCount()<<std::endl; // 3
+        std::cout<<"ptr3的引用计数: "<<ptr3.controlBlock_->getCount()<<std::endl; // 3
     }
     // ptr3出作用域就会被析构,那么引用计数就会变小
-    std::cout<<ptr2.controlBlock_->getCount()<<std::endl; //2
+    std::cout<<"ptr2的引用计数: "<<ptr2.controlBlock_->getCount()<<std::endl; //2
+
+    // 实验赋值函数的引用计数变化---》主要测赋值函数
+    {
+        M_shared_ptr<int> ptr3;
+        std::cout<<"ptr3的引用计数: "<<ptr3.controlBlock_->getCount()<<std::endl; // 1
+        ptr2 = ptr3;
+        // 这里ptr3的引用计数为2,ptr2现在指向ptr3的资源上,所以原先ptr2指向的区域引用计数减1，也就是ptr1变为1
+        std::cout<<"ptr3的引用计数: "<<ptr3.controlBlock_->getCount()<<std::endl; // 2
+        // 这里需要注意ptr2(ptr1)原来的引用计数为2,由于上面的赋值操作改变了指向,所以引用计数减去1
+        std::cout<<"ptr1的引用计数: "<<ptr1.controlBlock_->getCount()<<std::endl; // 1
+    }
     // ptr3 = ptr2; // 3
     // // 检查两人的引用计数变化
     // // 输出引用计数的变化
     // std::cout<<"-------------"<<std::endl;
     // // 最终三个指针指向一块区域
     // std::cout<<ptr3.controlBlock_->getCount()<<std::endl; //3
-    // std::cout<<ptr2.controlBlock_->getCount()<<std::endl; //3
-    // std::cout<<ptr1.controlBlock_->getCount()<<std::endl; //3
+    // std::cout<<"ptr2的引用计数: "<<ptr2.controlBlock_->getCount()<<std::endl; //3
+    // std::cout<<"ptr1的引用计数: "<<ptr1.controlBlock_->getCount()<<std::endl; //3
     return 0;
 }
