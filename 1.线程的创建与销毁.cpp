@@ -22,7 +22,7 @@ int main()
     std::thread func1(test);
    
     // 有参线程的调用
-    std::thread func2(test2,100);
+    std::thread func2(test2,200);
     
     // 主函数的输出
     std::cout << "main的调用" << std::endl;
